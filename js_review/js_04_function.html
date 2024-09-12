@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>js 04 function</title>
+    <script>
+        function add1(x, y) {
+            return x + y;
+        }
+        // alert( "add1="+add1(3,4) )
+        
+        const add2 = (x, y) => {
+            return x + y;
+        };
+        // alert( "add2="+add2(3,4) )
+        
+        const add3 = (x, y) => x + y;
+        // alert( "add3="+add3(3,4) )
+        
+        const add4 = (x, y) => ({ x: x, y: y, result:(x+y) });
+        alert( "add4="+add4(3,4) )
+        let o = add4(3,4)
+        alert( "add4="+JSON.stringify(o) )
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

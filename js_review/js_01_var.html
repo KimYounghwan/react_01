@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>js_01 변수</title>
+    <script>
+        // a = 100 // 아주옛날방식. 비추천
+        // var a = 200 // 옛날방식. 비추천
+        // var a = 300 // 변수에 대한 재선언이 가능
+        let a = 400  //전역변수(Global Variable)
+        const b = 200; //상수. 값변경금지
+        const c = [100,200] //배열이 상수에 할당
+        c[0] = 500
+        //alert( c )
+        if(a > 200){
+            let s = 300; // let의 사용범위는 블록단위( {...} )
+            alert('a > 200')
+        }
+        alert( "s="+s ) // ReferenceError: s is not defined
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

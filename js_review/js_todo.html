@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>할일관리</title>
+    <style>
+        .td_done { text-decoration: line-through ; }
+    </style>
+</head>
+<body>
+    <h1>할일관리</h1>
+    <div class="container">
+        <div class="form_area">
+            <form id="todo_form">
+                <div>
+                    <input type="hidden" name="todo_no" id="todo_no" value="0">
+
+                    <label for="todo_date">날짜</label>
+                    <input type="date" name="todo_date" id="todo_date" required>
+                </div>
+                <div>
+                    <label for="todo_time">시간</label>
+                    <input type="time" name="todo_time" id="todo_time" required>
+                </div>
+                <div>
+                    <label for="todo_title">제목</label>
+                    <input type="text" name="todo_title" id="todo_title" required>
+                </div>
+                <div>
+                    <label for="todo_content">내용</label>
+                    <textarea name="todo_content" id="todo_content" cols="30" rows="3" required></textarea>
+                </div>
+                <div>
+                    <input type="submit" value="등록">
+                    <input type="reset" value="지우기">
+                </div>
+            </form>
+        </div>
+
+        <div class="list_area">
+            <table>
+                <thead>
+                    <th>날짜</th><th>시간</th><th>제목</th><th>관리</th>
+                </thead>
+                <tbody id="todo_tbody">
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+<script>
+    let todo_arr = []; //todo배열
+
+    load_todo_list()
+    //페이지 시작시  할일목록 복원
+    function load_todo_list(){
+        let td_json = localStorage.getItem("todo_json")
+        if( td_json ){
+            //json 문자열을 js객체로 변환
+            todo_arr = JSON.parse(td_json)
+            update_todo_list();
+        }
+    }
+
+    //폼에 전송이벤트 처리
+    let todo_form = document.querySelector("#todo_form")
+    todo_form.onsubmit = function(){
+        //alert("전송")
+        //입력한값을 Todo객체로 만들어 todo배열에 저장
+        let td_no = document.querySelector("#todo_no").value;
+
+        let td_date = document.querySelector("#todo_date").value;
+        let td_time = todo_form.todo_time.value;
+        let td_title = todo_form.todo_title.value;
+        let td_content = todo_form.todo_content.value;
+        //alert(td_date+","+td_time+","+td_title+","+td_content)
+        let td_obj = {
+            td_no : new Date().getTime(), //지금시간을 밀리초로
+            td_date: td_date,
+            td_time: td_time,
+            td_title: td_title,
+            td_content: td_content,
+            td_done: false   //할일종료여부
+        }
+        // td_no==0 새로 저장, td_no != 0 수정
+        if(td_no=="0"){ //새로 저장
+            todo_arr.push(td_obj);//입력값을 객체로 만들어 배열에 저장
+        }else{ //수정
+            // 할일목록에서 td_no값을 가진 할일을 찾아 값을 수정
+            for(let td of todo_arr){
+                if(td.td_no == td_no){
+                    td.td_date = td_date
+                    td.td_time = td_time
+                    td.td_title = td_title
+                    td.td_content = td_content
+                }
+            }
+        }
+        //localStorage에 저장. 껏다켜도 복원
+        let td_json = JSON.stringify(todo_arr);//배열을 문자열로 변환
+        localStorage.setItem("todo_json",td_json)
+
+        //alert( "할일개수:"+todo_arr.length )
+        todo_form.reset()
+        //할일목록에 출력
+        update_todo_list()
+        return false;//기본 동작 취소(전송못하게함)
+    }
+    function update_todo_list(){
+        let todo_tbody = document.querySelector("#todo_tbody")
+        let s = ""
+        for( let td of todo_arr){
+            let dn = (td.td_done)?"td_done":"";
+            s += "<tr class='"+dn+"'>"
+            s += "<td>"+td.td_date+"</td>"
+            s += "<td>"+td.td_time+"</td>"
+            s += "<td><a href='#' onclick='show_todo("+td.td_no+")'>"+td.td_title+"</a></td>"
+            s += "<td>"
+            let ch = (td.td_done)?"checked":"";
+            s += "<input type='checkbox' "+ch+" onclick='change_todo("+td.td_no+")'>완료"
+            s += "<button onclick='delete_todo("+td.td_no+")'>삭제</button>"
+            s += "</td>"
+            s += "</tr>"
+        }
+        todo_tbody.innerHTML = s;
+    }
+    // no에 해당하는 할일 찾아서 완료여부 변경
+    function change_todo(no){
+        for(let td of todo_arr){
+            if(td.td_no == no){
+                td.td_done = !td.td_done ; //반대값
+                break;//검색 중단
+            }
+        }
+        //저장, 목록업데이트
+        //localStorage에 저장. 껏다켜도 복원
+        let td_json = JSON.stringify(todo_arr);//배열을 문자열로 변환
+        localStorage.setItem("todo_json",td_json)
+        //할일목록에 출력
+        update_todo_list()
+    }
+    // no에 해당하는 할일 찾아서 보여주기
+    function show_todo(no){
+        for(let td of todo_arr){
+            if(td.td_no == no){
+                display_todo(td);
+                break;//검색 중단
+            }
+        }
+    }
+    // no에 해당하는 할일 찾아서 삭제하기
+    function delete_todo(no){
+        //삭제할 할일의 순번 검색
+        let del_no = -1;
+        for(let i in todo_arr){
+            if(todo_arr[i].td_no == no){
+                del_no = i;
+                break;//검색 중단
+            }
+        }
+        if(del_no == -1) return;//못찾으면 -1. 함수종료
+        todo_arr.splice(del_no,1) //찾았으면 1개 삭제
+        //localStorage에 저장. 껏다켜도 복원
+        let td_json = JSON.stringify(todo_arr);//배열을 문자열로 변환
+        localStorage.setItem("todo_json",td_json)
+        //할일목록에 출력
+        update_todo_list()
+
+    }
+    //보여줄 할일을 받아서 폼에 출력함
+    function display_todo(todo_obj){
+        todo_form.todo_no.value = todo_obj.td_no;
+
+        todo_form.todo_date.value = todo_obj.td_date;
+        todo_form.todo_time.value = todo_obj.td_time;
+        todo_form.todo_title.value = todo_obj.td_title;
+        todo_form.todo_content.value = todo_obj.td_content;
+    }
+</script>    
+</body>
+</html>

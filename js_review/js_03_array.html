@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>js 03 array</title>
+    <script>
+        const q = [1, 2, 3];
+        const r = [4, 5, 6];
+        let a = [ q, r ]
+        a = [ [1, 2, 3], [4, 5, 6]  ] //2차원배열
+        console.log(a)
+        let name1 = ['홍','김'] //1반학생이름
+        let name2 = ['박','최'] //2반학생이름
+        //1반과 2반학생 이름은 합치기
+        let name3 = [ name1, name2 ] //2차원배열
+        console.log(name3)
+        let name4 = name1.concat(name2) //1차원배열
+        console.log(name4)
+        let name5 = [...name1, ...name2] //1차원배열
+        console.log(name5)
+        ////////////////////////
+        const dog = {
+            name: '멍멍이',
+        };
+        const dogInfo = {
+            ...dog, // name: '멍멍이',
+            age: 2,
+        };
+        console.log(dogInfo); // { name: '멍멍이', age: 2 }
+        console.log("이름:"+dogInfo.name); // { name: '멍멍이', age: 2 }
+        //////////////////////////
+        const dog2 = {
+            name: '멍멍이',
+        };
+        const dogInfo2 = {
+            dog: dog2, 
+            age: 2,
+        };    
+        console.log("이름:"+dogInfo2.dog.name); // { dog.name: '멍멍이', age: 2 }
+        console.log("이름:"+dogInfo2.name); // dog.name: undefined
+    //// 배열내 저장돤 값을 추출
+    //기본방식
+    let aa = name1[0] //['홍','김']
+    let bb = name1[1]
+    // ES 방식
+    let [cc,dd] = name1;//순서대로 저장
+    alert(cc+","+dd)
+    /// 객체의 비구조화
+    let dog3 = {
+        kind:"진도개",
+        age:3
+    }
+    let {kind, age} = dog3;
+    alert(kind+","+age)
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
